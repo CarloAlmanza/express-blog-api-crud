@@ -1,3 +1,5 @@
+// routers/postsRouter.js
+
 const express = require('express');
 const router = express.Router();
 const postsController = require('../controllers/postsController');
@@ -10,6 +12,9 @@ router.get('/:id', postsController.show);
 
 // Store (POST /posts)
 router.post('/', postsController.store);
+
+// Update (PUT /posts/:id)
+router.put('/:id', postsController.update);
 
 // Destroy (DELETE /posts/:id)
 router.delete('/:id', postsController.destroy);
