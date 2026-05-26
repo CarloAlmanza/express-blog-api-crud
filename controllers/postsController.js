@@ -12,6 +12,16 @@ const generateSlug = (title) => {
         .replace(/^-+|-+$/g, '');
 };
 
+// Helper per trovare post per ID o slug
+const findPost = (identifier) => {
+    // Se è un numero, cerco per ID
+    if (!isNaN(parseInt(identifier))) {
+        return posts.find(p => p.id === parseInt(identifier));
+    }
+    // Altrimenti cerco per slug
+    return posts.find(p => p.slug === identifier);
+};
+
 // Index - Lista tutti i post
 const index = (req, res) => {
     res.status(200).json({
@@ -20,16 +30,10 @@ const index = (req, res) => {
     });
 };
 
-// Show - Mostra un singolo post
+// Show - Mostra un singolo post (per ID o slug)
 const show = (req, res) => {
     const { id } = req.params;
-    const postId = parseInt(id);
-
-    if (isNaN(postId) || postId <= 0) {
-        return res.status(400).json({ error: 'ID non valido' });
-    }
-
-    const post = posts.find(p => p.id === postId);
+    const post = findPost(id);
 
     if (!post) {
         return res.status(404).json({ error: 'Post non trovato' });
@@ -238,6 +242,7 @@ const destroy = (req, res) => {
     const { id } = req.params;
     const postId = parseInt(id);
 
+    // Validazione ID
     if (isNaN(postId) || postId <= 0) {
         return res.status(400).json({ error: 'ID non valido' });
     }
