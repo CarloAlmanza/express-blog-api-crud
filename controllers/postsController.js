@@ -106,10 +106,10 @@ const store = (req, res) => {
         id: newId,
         title: title.trim(),
         content: content.trim(),
-        image: image || null,  // se non fornita, mettiamo null
+        image: image || null,
         tags: tags,
         slug: slug,
-        published: false,  // default: non pubblicato
+        published: false,
         prep_time: parseInt(prep_time),
         created_at: now
     };
@@ -124,32 +124,6 @@ const store = (req, res) => {
     res.status(201).json({
         message: 'Post creato con successo',
         post: newPost
-    });
-};
-
-// Destroy - Elimina un post
-const destroy = (req, res) => {
-    const { id } = req.params;
-    const postId = parseInt(id);
-
-    if (isNaN(postId) || postId <= 0) {
-        return res.status(400).json({ error: 'ID non valido' });
-    }
-
-    const postIndex = posts.findIndex(p => p.id === postId);
-
-    if (postIndex === -1) {
-        return res.status(404).json({ error: 'Post non trovato' });
-    }
-
-    const deletedPost = posts.splice(postIndex, 1)[0];
-
-    console.log(`🗑️ Post eliminato: ${deletedPost.title}`);
-    console.log(`📊 Totale post rimasti: ${posts.length}`);
-
-    res.status(200).json({
-        message: 'Post eliminato con successo',
-        post: deletedPost
     });
 };
 
@@ -171,7 +145,7 @@ const update = (req, res) => {
         return res.status(404).json({ error: 'Post non trovato' });
     }
 
-    // Validazione campi (almeno uno deve essere presente per l'update)
+    // Validazione campi
     const errors = [];
 
     if (title !== undefined && (typeof title !== 'string' || title.trim() === '')) {
@@ -259,10 +233,36 @@ const update = (req, res) => {
     });
 };
 
+// Destroy - Elimina un post
+const destroy = (req, res) => {
+    const { id } = req.params;
+    const postId = parseInt(id);
+
+    if (isNaN(postId) || postId <= 0) {
+        return res.status(400).json({ error: 'ID non valido' });
+    }
+
+    const postIndex = posts.findIndex(p => p.id === postId);
+
+    if (postIndex === -1) {
+        return res.status(404).json({ error: 'Post non trovato' });
+    }
+
+    const deletedPost = posts.splice(postIndex, 1)[0];
+
+    console.log(`🗑️ Post eliminato: ${deletedPost.title}`);
+    console.log(`📊 Totale post rimasti: ${posts.length}`);
+
+    res.status(200).json({
+        message: 'Post eliminato con successo',
+        post: deletedPost
+    });
+};
+
 module.exports = {
     index,
     show,
     store,
-    destroy,
-    update
+    update,
+    destroy
 };
